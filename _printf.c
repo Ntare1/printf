@@ -1,6 +1,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "main.h"
+#include <stdlib.h>
+#include <stddef.h>
 
 /**
  * _printf - prints the arguments
@@ -16,6 +18,8 @@ int _printf(const char *format, ...)
 	va_start(args, format);
 	y = 0;
 	if (format[0] == '%' && format[1] == '\0')
+		return (-1);
+	while (format != NULL && format[y] != '\0')
 	{
 		if (format[y] == '%')
 		{
