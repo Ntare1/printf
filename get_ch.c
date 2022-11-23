@@ -1,11 +1,11 @@
 #include "main.h"
 
 /**
- * get_ch - finds the specifiers
- * @z: input
+ * get_ch - finds the format
+ * @format: format
  * Return: 0
  */
-int (*get_ch(char z))(va_list args)
+int (*get_ch(const char *format))(va_list)
 {
 	int y = 0;
 	spec arr[] = {
@@ -13,12 +13,12 @@ int (*get_ch(char z))(va_list args)
 		{"s", print_s},
 		{"%", print_percent},
 		{NULL, NULL}
-	};
-	while (arr[y].valid)
+	}
+	while (arr[y].sc[0])
 	{
-		if (z == arr[y].valid[0])
+		if (arr[y].sc[0] == (*format))
 			return (arr[y].f);
 		y++;
 	}
-	return (0);
+	return (NULL);
 }
