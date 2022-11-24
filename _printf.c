@@ -5,21 +5,20 @@
 
 /**
  * get_ch - finds the formats
- * @z: formats
+ * @format: formats
  * Return: 0
  */
-int (*get_ch(char z))(va_list args)
+int (*get_ch(const char *format))(va_list)
 {
-	int y = 0;
+	unsigned int y = 0;
 	spec arr[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"%", print_percent},
-		{NULL, NULL}
+		{"c", print_char},
+		{"s", print_string},
+		{"%", print_percentage}
 	};
-	while (arr[y].valid)
+	while (arr[y].sc[0])
 	{
-		if (z == arr[y].valid[0])
+		if (arr[y].sc[0] == (*format))
 			return (arr[y].f);
 		y++;
 	}
@@ -33,37 +32,39 @@ int (*get_ch(char z))(va_list args)
  */
 int _printf(const char *format, ...)
 {
-	int size = 0, y;
-	int (*x)(va_list);
 	va_list args;
+	int (*x)(va_list);
+	unsigned int y = 0, size = 0;
 
-	va_start(args, format);
-	y = 0;
-	if (format[0] == '%' && format[1] == '\0')
+	if (format == NULL)
 		return (-1);
-	while (format != NULL && format[y] != '\0')
+	va_start(args, format);
+	while (format[y])
 	{
-		if (format[y] == '%')
+		while (format[y] != '%' && format[y])
 		{
-			if (format[y + 1] == '%')
-			{
-				size += _putchar(format[y]);
-				y++;
-			}
-			else
-			{
-				x = get_ch(format[y + 1]);
-				if (x)
-					size += x(args);
-				else
-					size = _putchar(format[y]) + _putchar(format[y + 1]);
-				y += 2;
-			}
+			_putchar(format[y]);
+			size++;
+			y++;
 		}
-		size += _putchar(format[y]);
-		y++;
+		if (format[y] == '\0')
+			return (y);
+		f = get_ch(&format[y + 1]);
+		if (f != NULL)
+		{
+			y += f(args);
+			y += 2;
+			continue;
 		}
-	_putchar('\n');
+		if (!format[y + 1])
+			return (-1);
+		_putchar(format[y]);
+		size++;
+		if (format[y + 1] == '%')
+			y += 2;
+		else
+			y++;
+	}
 	va_end(args);
 	return (size);
 }
